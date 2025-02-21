@@ -1,7 +1,7 @@
 # Default input parameters
 docker ?= docker
 image ?= public.ecr.aws/eodh/eodh-default-notebook
-version ?= python-3.12-0.2.1
+version ?= python-3.12-0.2.3
 
 .SILENT:
 MAKEFLAGS += --no-print-directory
