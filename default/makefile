@@ -1,7 +1,7 @@
 # Default input parameters
 docker ?= docker
 image ?= public.ecr.aws/eodh/eodh-default-notebook
-version ?= python-3.12-0.2.3
+version ?= python-3.12-0.2.4
 
 .SILENT:
 MAKEFLAGS += --no-print-directory
@@ -13,3 +13,6 @@ container-build:
 .PHONY: container-push
 container-push:
 	$(docker) push $(image):$(version)
+
+.PHONY: deploy
+deploy: container-build container-push
