@@ -1,7 +1,7 @@
 # Default input parameters
 docker ?= docker
 image ?= public.ecr.aws/eodh/eodh-jupyter-hub
-version ?= 4.1.0-0.1.0-rc2
+version ?= 4.1.0-0.1.2
 
 .SILENT:
 MAKEFLAGS += --no-print-directory
