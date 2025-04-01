@@ -10,5 +10,5 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 USER ${NB_UID}
 
 RUN python -m pip install --upgrade pip
-RUN python -m pip install boto3==1.36.18 pyeodh==0.0.14 shapely==2.0.7 \
+RUN python -m pip install boto3==1.37.20 pyeodh==0.1.2 shapely==2.0.7 \
   geopandas==1.0.1 python-dotenv==1.0.1
