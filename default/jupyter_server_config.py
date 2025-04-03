@@ -60,18 +60,16 @@ def configure_s3_contents_manager():
     credentials = assumed_role["Credentials"]
 
     c.HybridContentsManager.manager_classes["s3"] = S3ContentsManager
-    c.HybridContentsManager.manager_kwargs = {
-        "s3": {
-            "access_key_id": credentials["AccessKeyId"],
-            "secret_access_key": credentials["SecretAccessKey"],
-            "session_token": credentials["SessionToken"],
-            "prefix": env_vars["WORKSPACE"],
-            "bucket": env_vars["WORKSPACE_BUCKET"],
-            "region_name": env_vars["AWS_REGION"],
-            "endpoint_url": f"https://s3.{env_vars['AWS_REGION']}.amazonaws.com",
-            "sse": "AES256",
-            "signature_version": "s3v4",
-        },
+    c.HybridContentsManager.manager_kwargs["s3"] = {
+        "access_key_id": credentials["AccessKeyId"],
+        "secret_access_key": credentials["SecretAccessKey"],
+        "session_token": credentials["SessionToken"],
+        "prefix": env_vars["WORKSPACE"],
+        "bucket": env_vars["WORKSPACE_BUCKET"],
+        "region_name": env_vars["AWS_REGION"],
+        "endpoint_url": f"https://s3.{env_vars['AWS_REGION']}.amazonaws.com",
+        "sse": "AES256",
+        "signature_version": "s3v4",
     }
 
 
