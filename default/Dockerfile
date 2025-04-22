@@ -10,7 +10,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 
 USER ${NB_UID}
 
-RUN python -m pip install --upgrade pip
+RUN python -m pip install --upgrade jupyterlab==4.4.0 jupyterlab-git==0.51.1
 RUN python -m pip install boto3==1.37.1 pyeodh==0.1.2 shapely==2.0.7 \
   geopandas==1.0.1 python-dotenv==1.0.1 s3contents==0.11.2 hybridcontents==0.4.0
 
