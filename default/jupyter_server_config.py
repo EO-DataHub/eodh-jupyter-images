@@ -34,12 +34,12 @@ def configure_s3_contents_manager():
     env_vars = {
         k: os.environ.get(k)
         for k in [
-            "AWS_REGION",
-            "AWS_ROLE_ARN",
             "JUPYTERHUB_USER",
+            "S3CONTENTS_AWS_REGION",
+            "S3CONTENTS_AWS_ROLE_ARN",
+            "S3CONTENTS_WORKSPACE_ACCESS_TOKEN",
+            "S3CONTENTS_WORKSPACE_BUCKET",
             "WORKSPACE",
-            "WORKSPACE_ACCESS_TOKEN",
-            "WORKSPACE_BUCKET",
         ]
     }
 
@@ -52,9 +52,9 @@ def configure_s3_contents_manager():
     sts_client = boto3.client("sts")
 
     assumed_role = sts_client.assume_role_with_web_identity(
-        RoleArn=env_vars["AWS_ROLE_ARN"],
+        RoleArn=env_vars["S3CONTENTS_AWS_ROLE_ARN"],
         RoleSessionName=f"Jupyter-{env_vars['WORKSPACE']}-{env_vars['JUPYTERHUB_USER']}",
-        WebIdentityToken=env_vars["WORKSPACE_ACCESS_TOKEN"],
+        WebIdentityToken=env_vars["S3CONTENTS_WORKSPACE_ACCESS_TOKEN"],
     )
 
     credentials = assumed_role["Credentials"]
@@ -65,9 +65,9 @@ def configure_s3_contents_manager():
         "secret_access_key": credentials["SecretAccessKey"],
         "session_token": credentials["SessionToken"],
         "prefix": env_vars["WORKSPACE"],
-        "bucket": env_vars["WORKSPACE_BUCKET"],
-        "region_name": env_vars["AWS_REGION"],
-        "endpoint_url": f"https://s3.{env_vars['AWS_REGION']}.amazonaws.com",
+        "bucket": env_vars["S3CONTENTS_WORKSPACE_BUCKET"],
+        "region_name": env_vars["S3CONTENTS_AWS_REGION"],
+        "endpoint_url": f"https://s3.{env_vars['S3CONTENTS_AWS_REGION']}.amazonaws.com",
         "sse": "AES256",
         "signature_version": "s3v4",
     }
