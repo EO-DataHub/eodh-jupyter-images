@@ -5,6 +5,8 @@ from hybridcontents import HybridContentsManager
 from jupyter_server.services.contents.largefilemanager import LargeFileManager
 from s3contents import S3ContentsManager
 
+HOME_DIR = "/home/jovyan"
+
 c = get_config()  # noqa
 
 # Listen on all interfaces (ipv4 and ipv6)
@@ -15,7 +17,7 @@ c.ServerApp.open_browser = False
 c.InlineBackend.figure_formats = {"png", "jpeg", "svg", "pdf"}
 
 # Configure Hybrid Contents Manager
-c.ContentsManager.root_dir = "/home/jovyan"
+c.ContentsManager.root_dir = HOME_DIR
 c.ServerApp.contents_manager_class = HybridContentsManager
 c.HybridContentsManager.manager_classes = {
     "": LargeFileManager,  # root
@@ -25,6 +27,9 @@ c.HybridContentsManager.manager_kwargs = {
         "delete_to_trash": False,  # https://github.com/jupyter/notebook/issues/3130
     },
 }
+c.HybridContentsManager.files_handler_params = {
+    "path": HOME_DIR
+}  # Required to allow StaticFileHandler to serve files (downloads via JH file browser)
 
 
 def configure_s3_contents_manager():
