@@ -5,6 +5,8 @@ from hybridcontents import HybridContentsManager
 from jupyter_server.services.contents.largefilemanager import LargeFileManager
 from s3contents import S3ContentsManager
 
+HOME_DIR = "/home/jovyan"
+
 c = get_config()  # noqa
 
 # Listen on all interfaces (ipv4 and ipv6)
@@ -15,7 +17,7 @@ c.ServerApp.open_browser = False
 c.InlineBackend.figure_formats = {"png", "jpeg", "svg", "pdf"}
 
 # Configure Hybrid Contents Manager
-c.ContentsManager.root_dir = "/home/jovyan"
+c.ContentsManager.root_dir = HOME_DIR
 c.ServerApp.contents_manager_class = HybridContentsManager
 c.HybridContentsManager.manager_classes = {
     "": LargeFileManager,  # root
@@ -25,6 +27,9 @@ c.HybridContentsManager.manager_kwargs = {
         "delete_to_trash": False,  # https://github.com/jupyter/notebook/issues/3130
     },
 }
+c.HybridContentsManager.files_handler_params = {
+    "path": HOME_DIR
+}  # Required to allow StaticFileHandler to serve files (downloads via JH file browser)
 
 
 def configure_s3_contents_manager():
@@ -34,12 +39,12 @@ def configure_s3_contents_manager():
     env_vars = {
         k: os.environ.get(k)
         for k in [
-            "AWS_REGION",
-            "AWS_ROLE_ARN",
             "JUPYTERHUB_USER",
+            "S3CONTENTS_AWS_REGION",
+            "S3CONTENTS_AWS_ROLE_ARN",
+            "S3CONTENTS_WORKSPACE_ACCESS_TOKEN",
+            "S3CONTENTS_WORKSPACE_BUCKET",
             "WORKSPACE",
-            "WORKSPACE_ACCESS_TOKEN",
-            "WORKSPACE_BUCKET",
         ]
     }
 
@@ -52,9 +57,9 @@ def configure_s3_contents_manager():
     sts_client = boto3.client("sts")
 
     assumed_role = sts_client.assume_role_with_web_identity(
-        RoleArn=env_vars["AWS_ROLE_ARN"],
+        RoleArn=env_vars["S3CONTENTS_AWS_ROLE_ARN"],
         RoleSessionName=f"Jupyter-{env_vars['WORKSPACE']}-{env_vars['JUPYTERHUB_USER']}",
-        WebIdentityToken=env_vars["WORKSPACE_ACCESS_TOKEN"],
+        WebIdentityToken=env_vars["S3CONTENTS_WORKSPACE_ACCESS_TOKEN"],
     )
 
     credentials = assumed_role["Credentials"]
@@ -65,9 +70,9 @@ def configure_s3_contents_manager():
         "secret_access_key": credentials["SecretAccessKey"],
         "session_token": credentials["SessionToken"],
         "prefix": env_vars["WORKSPACE"],
-        "bucket": env_vars["WORKSPACE_BUCKET"],
-        "region_name": env_vars["AWS_REGION"],
-        "endpoint_url": f"https://s3.{env_vars['AWS_REGION']}.amazonaws.com",
+        "bucket": env_vars["S3CONTENTS_WORKSPACE_BUCKET"],
+        "region_name": env_vars["S3CONTENTS_AWS_REGION"],
+        "endpoint_url": f"https://s3.{env_vars['S3CONTENTS_AWS_REGION']}.amazonaws.com",
         "sse": "AES256",
         "signature_version": "s3v4",
     }
