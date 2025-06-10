@@ -4,7 +4,7 @@ A collection of images for the UK EO DataHub Jupyter Hub.
 
 Each image is located in its own directory. A Dockerfile and Makefile is defined for each image.
 
-To build and push the Jupyter images in this repository, first update the image tag in the Makefile and run the following commands
+To build and push the Jupyter images in this repository, first update the image tag in the Makefile and run the following commands:
 
 ```bash
 # build and push default image
