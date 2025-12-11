@@ -1,0 +1,26 @@
+name: Publish default notebook image
+
+on:
+  push:
+    tags:
+      - 'default-*'
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.extract.outputs.tag }}
+    steps:
+      - id: extract
+        run: echo "tag=${GITHUB_REF_NAME#default-}" >> "$GITHUB_OUTPUT"
+
+  publish:
+    needs: prepare
+    uses: EODH/github-actions/.github/workflows/ecr-publish.yaml@main
+    with:
+      IMAGE_NAME: eodh-default-notebook
+      IMAGE_TAG: ${{ needs.prepare.outputs.image_tag }}
+      AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
+      AWS_ECR_ALIAS: ${{ vars.AWS_ECR_ALIAS }}
+      BUILD_CONTEXT: default
+    secrets: inherit
