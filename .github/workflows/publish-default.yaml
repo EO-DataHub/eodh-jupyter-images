@@ -24,3 +24,6 @@ jobs:
       AWS_ECR_ALIAS: ${{ vars.AWS_ECR_ALIAS }}
       BUILD_CONTEXT: default
     secrets: inherit
+    permissions:
+      id-token: write
+      contents: read
