@@ -16,7 +16,7 @@ jobs:
 
   publish:
     needs: prepare
-    uses: EODH/github-actions/.github/workflows/ecr-publish.yaml@main
+    uses: EO-DataHub/github-actions/.github/workflows/ecr-publish.yaml@main
     with:
       IMAGE_NAME: eodh-default-notebook
       IMAGE_TAG: ${{ needs.prepare.outputs.image_tag }}
