@@ -1,0 +1,9 @@
+# EODH Default Notebook - Python 3.14
+# Geospatial packages via conda-forge for binary compatibility
+name: base
+channels:
+  - conda-forge
+dependencies:
+  - gdal=3.10.0
+  - rasterio=1.4.3
+  - pyproj=3.7.0
