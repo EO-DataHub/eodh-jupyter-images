@@ -21,11 +21,11 @@ USER ${NB_UID}
 
 # Install geospatial packages via mamba (binary compatibility)
 ARG PYTHON_VERSION
-COPY environments/py${PYTHON_VERSION}.yml /tmp/environment.yml
+COPY python-${PYTHON_VERSION}/environment.yml /tmp/environment.yml
 RUN mamba env update -n base -f /tmp/environment.yml && mamba clean --all -f -y
 
 # Install Python packages via pip (pinned versions)
-COPY requirements/py${PYTHON_VERSION}.txt /tmp/requirements.txt
+COPY python-${PYTHON_VERSION}/requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 # Copy Jupyter configuration
