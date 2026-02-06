@@ -38,11 +38,26 @@ push:
 .PHONY: publish
 publish: build push
 
+# Run full test suite by mounting tests folder
+#
+# Usage:
+#   make test                                # Test Python 3.13 (default)
+#   make test PYTHON_VERSION=3.12            # Test Python 3.12
+#
 .PHONY: test
 test:
 	@echo "Testing $(IMAGE):$(TAG)"
+	$(DOCKER) run --rm \
+		-v $(CURDIR)/tests:/home/jovyan/tests:ro \
+		$(IMAGE):$(TAG) \
+		pytest /home/jovyan/tests -v
+
+# Quick smoke test (no pytest, just import check)
+.PHONY: smoke-test
+smoke-test:
+	@echo "Smoke testing $(IMAGE):$(TAG)"
 	$(DOCKER) run --rm $(IMAGE):$(TAG) \
-		python -c "import numpy, scipy, pandas; from osgeo import gdal; print('OK')"
+		python -c "import numpy, scipy, pandas; from osgeo import gdal; import boto3; print('OK')"
 
 .PHONY: info
 info:
