@@ -8,3 +8,4 @@ dependencies:
   - gdal>=3.9
   - rasterio>=1.4
   - pyproj>=3.7
+  - sqlite>=3.40
