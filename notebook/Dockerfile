@@ -30,6 +30,3 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 # Copy Jupyter configuration
 COPY jupyter_server_config.py /etc/jupyter/jupyter_server_config.py
-
-# Cleanup
-RUN rm -f /tmp/environment.yml /tmp/requirements.txt
