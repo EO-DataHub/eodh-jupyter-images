@@ -1,0 +1,13 @@
+# EODH Default Notebook - Python 3.13
+# Geospatial packages via conda-forge for binary compatibility
+# Note: Use >= constraints to let mamba resolve compatible versions
+name: base
+channels:
+  - conda-forge
+dependencies:
+  - gdal>=3.10
+  - rasterio>=1.4
+  - pyproj>=3.7
+  - sqlite>=3.40
+  - zarr>=2.18
+  - numcodecs>=0.12
