@@ -1,0 +1,37 @@
+name: Publish default notebook image
+
+on:
+  push:
+    tags:
+      - 'python-*'
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.extract.outputs.tag }}
+      python_version: ${{ steps.extract.outputs.python_version }}
+    steps:
+      - id: extract
+        run: |
+          # tag=python-3.12-2026.02.1
+          echo "tag=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
+
+          # Extract Python version (e.g., 3.12 from python-3.12-2026.02.1)
+          PY=$(echo $GITHUB_REF_NAME | sed -n 's/python-\([0-9.]*\)-.*/\1/p')
+          echo "python_version=$PY" >> $GITHUB_OUTPUT
+
+  publish:
+    needs: prepare
+    uses: EO-DataHub/github-actions/.github/workflows/ecr-publish.yaml@main
+    with:
+      IMAGE_NAME: eodh-default-notebook
+      IMAGE_TAG: ${{ needs.prepare.outputs.image_tag }}
+      AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
+      AWS_ECR_ALIAS: ${{ vars.AWS_ECR_ALIAS }}
+      BUILD_CONTEXT: notebook
+      BUILD_ARGS: PYTHON_VERSION=${{ needs.prepare.outputs.python_version }}
+    secrets: inherit
+    permissions:
+      id-token: write
+      contents: read
