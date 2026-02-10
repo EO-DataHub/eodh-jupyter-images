@@ -94,13 +94,13 @@ When a new Python version is released (typically October each year):
 
 1. Create new dependency folder:
    ```bash
-   mkdir python-3.15
-   cp python-3.14/requirements.txt python-3.15/
-   cp python-3.14/environment.yml python-3.15/
+   mkdir python-3.14
+   cp python-3.13/requirements.txt python-3.14/
+   cp python-3.13/environment.yml python-3.14/
    ```
-2. Update pinned versions for Python 3.15 compatibility
-3. Verify base image exists: `quay.io/jupyter/datascience-notebook:python-3.15`
-4. Build and test: `make container-build tag=python-3.15-2026.10.01 && make test tag=python-3.15-2026.10.01`
+2. Update pinned versions for Python 3.14 compatibility
+3. Verify base image exists: `quay.io/jupyter/datascience-notebook:python-3.14`
+4. Build and test: `make container-build tag=python-3.14-2026.10.01 && make test tag=python-3.14-2026.10.01`
 5. Update this README's "Supported Python Versions" table
 6. Add to JupyterHub profile list
 
@@ -133,7 +133,7 @@ Following [SPEC-0000](https://scientific-python.org/specs/spec-0000/), Python ve
 ### Release Checklist
 
 - [ ] Dependencies updated and pinned
-- [ ] Tests pass: `make test tag=python-X.XX-YYYY.MM.DD`
+- [ ] Tests pass: `make test tag=python-X.XX-YYYY.MM`
 - [ ] SPEC-0000 compliance verified
 - [ ] Image built and pushed to ECR
 - [ ] Git tag created and pushed
@@ -149,9 +149,6 @@ notebook/
 │   ├── environment.yml         # Mamba dependencies (geospatial)
 │   └── requirements.txt        # Pip dependencies (pinned versions)
 ├── python-3.13/
-│   ├── environment.yml
-│   └── requirements.txt
-├── python-3.14/
 │   ├── environment.yml
 │   └── requirements.txt
 ├── scripts/
@@ -187,13 +184,7 @@ Configuration is in `jupyter_server_config.py`.
 make test tag=python-3.13-2026.02.15
 
 # Run tests with custom image
-make test image=public.ecr.aws/eodh/eodh-default-notebook tag=python-3.13-2026.02.15
-
-# Run pytest directly in container
-docker run --rm \
-  -v $(pwd)/tests:/home/jovyan/tests:ro \
-  public.ecr.aws/eodh/eodh-default-notebook:python-3.13-2026.02.15 \
-  pytest /home/jovyan/tests -v
+make test image=public.ecr.aws/eodh/eodh-default-notebook tag=python-3.13-2026.02
 ```
 
 ## SPEC-0000 Compliance
