@@ -2,8 +2,9 @@
 # Default input parameters
 docker ?= docker
 image ?= public.ecr.aws/eodh/eodh-default-notebook
-tag ?= python-3.12-2026.02.1
+tag ?= python-3.xx-2026.xx
 python_version := $(shell echo $(tag) | sed -n 's/python-\([0-9.]*\)-.*/\1/p')
+
 
 .SILENT:
 MAKEFLAGS += --no-print-directory
