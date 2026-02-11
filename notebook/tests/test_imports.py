@@ -109,6 +109,18 @@ class TestEODHPackages:
         # hybridcontents may not have __version__
 
 
+class TestDaskAndWidgets:
+    """Test dask-kubernetes and ipywidgets package imports."""
+
+    def test_dask_kubernetes(self):
+        import dask_kubernetes
+        assert dask_kubernetes.__version__
+
+    def test_ipywidgets(self):
+        import ipywidgets
+        assert ipywidgets.__version__
+
+
 class TestKernels:
     """Test that Jupyter kernels are available."""
 

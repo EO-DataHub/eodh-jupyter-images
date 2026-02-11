@@ -11,3 +11,5 @@ dependencies:
   - sqlite>=3.40
   - zarr>=2.18
   - numcodecs>=0.12
+  - dask-kubernetes>=2025.7.0
+  - ipywidgets>=8.1.8
