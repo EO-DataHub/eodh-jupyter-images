@@ -1,0 +1,48 @@
+name: SPEC-0000 Compliance Check
+
+on:
+  schedule:
+    # Run quarterly: 1st day of Jan, Apr, Jul, Oct at 9am UTC
+    - cron: '0 9 1 1,4,7,10 *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  check-compliance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: pip install requests pandas packaging
+      
+      - name: Download and run SPEC-0000 checker
+        run: |
+          curl -O https://raw.githubusercontent.com/scientific-python/specs/main/spec-0000/SPEC0_versions.py
+          python SPEC0_versions.py
+      
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: spec0000-reports
+          path: |
+            chart.md
+            schedule.md
+      
+      - name: Create issue for review
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const schedule = fs.readFileSync('schedule.md', 'utf8');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[Quarterly] SPEC-0000 Compliance Review - ${new Date().toISOString().slice(0,7)}`,
+              body: `## Quarterly SPEC-0000 Review\n\n${schedule}`,
+              labels: ['maintenance', 'spec-0000']
+            });
