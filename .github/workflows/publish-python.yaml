@@ -14,10 +14,10 @@ jobs:
     steps:
       - id: extract
         run: |
-          # tag=python-3.13-2026.02
+          # tag=python-3.13-2026.02.0
           echo "tag=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
 
-          # Extract Python version (e.g., 3.13 from python-3.13-2026.02)
+          # Extract Python version (e.g., 3.13 from python-3.13-2026.02.0)
           PY=$(echo $GITHUB_REF_NAME | sed -n 's/python-\([0-9.]*\)-.*/\1/p')
           echo "python_version=$PY" >> $GITHUB_OUTPUT
 

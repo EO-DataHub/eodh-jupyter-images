@@ -2,7 +2,7 @@
 # Default input parameters
 docker ?= docker
 image ?= public.ecr.aws/eodh/eodh-default-notebook
-tag ?= python-3.xx-2026.xx
+tag ?= python-3.13-2026.02.0
 python_version := $(shell echo $(tag) | sed -n 's/python-\([0-9.]*\)-.*/\1/p')
 
 

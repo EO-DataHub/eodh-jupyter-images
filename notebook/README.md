@@ -14,14 +14,14 @@ The default EO DataHub user notebook server based on [Jupyter Docker Stacks](htt
 
 | Python | Status | Base Image Tag |
 |--------|--------|----------------|
-| 3.12 | Supported | `python-3.12-2026.02` |
-| 3.13 | Supported | `python-3.13-2026.02` |
+| 3.12 | Supported | `python-3.12-2026.02.0` |
+| 3.13 | Supported | `python-3.13-2026.02.0` |
 
 ## Building
 
 ### Using `make` command
 
-The Makefile derives the Python version from the image tag (e.g. `python-3.12-2026.02` → `3.12`).
+The Makefile derives the Python version from the image tag (e.g. `python-3.12-2026.02.0` → `3.12`).
 
 ```bash
 # Build with a specific tag (Python version is extracted from the tag)
@@ -52,30 +52,30 @@ make test tag=python-3.12-2026.02.1
 |-----------|---------|-------------|
 | `docker` | `docker` | Docker CLI to use |
 | `image` | `public.ecr.aws/eodh/eodh-default-notebook` | Image repository |
-| `tag` | `python-3.xx-2026.02` | Full image tag; Python version is derived from it |
+| `tag` | `python-3.13-2026.02.0` | Full image tag; Python version is derived from it |
 
 ## Release Process
 
 ### Versioning
 
-Images use **CalVer** tagging: `python-<VERSION>-<YYYY>.<MM>[.<PATCH>]`
+Images use **CalVer** tagging: `python-<VERSION>-<YYYY>.<MM>.<PATCH>`
 
 | Tag | Meaning |
 |-----|---------|
-| `python-3.13-2026.02` | Regular release |
+| `python-3.13-2026.02.0` | Regular release |
 | `python-3.13-2026.02.3` | Patch release (security fix, hotfix) |
 
 ### Regular Release
 
 1. Update dependencies in `python-X.XX/requirements.txt` and `environment.yml`
-2. Run tests locally: `make test tag=python-3.13-2026.02`
+2. Run tests locally: `make test tag=python-3.13-2026.02.0`
 3. Build and push:
    ```bash
-   make publish tag=python-3.13-2026.02
+   make publish tag=python-3.13-2026.02.0
    ```
 4. Tag the commit:
    ```bash
-   git tag default-python-3.13-2026.02
+   git tag default-python-3.13-2026.02.0
    git push origin --tags
    ```
 5. Update JupyterHub configuration to use new image tag
@@ -85,7 +85,7 @@ Images use **CalVer** tagging: `python-<VERSION>-<YYYY>.<MM>[.<PATCH>]`
 For security fixes or critical bugs on an existing release, use a tag with a patch suffix:
 
 ```bash
-make publish tag=python-3.13-2026.02
+make publish tag=python-3.13-2026.02.1
 ```
 
 ### Adding a New Python Version
@@ -133,7 +133,7 @@ Following [SPEC-0000](https://scientific-python.org/specs/spec-0000/), Python ve
 ### Release Checklist
 
 - [ ] Dependencies updated and pinned
-- [ ] Tests pass: `make test tag=python-X.XX-YYYY.MM`
+- [ ] Tests pass: `make test tag=python-X.XX-YYYY.MM.0`
 - [ ] SPEC-0000 compliance verified
 - [ ] Image built and pushed to ECR
 - [ ] Git tag created and pushed
@@ -181,10 +181,10 @@ Configuration is in `jupyter_server_config.py`.
 
 ```bash
 # Run tests via make (uses current image:tag; mounts tests/ into container)
-make test tag=python-3.13-2026.02.15
+make test tag=python-3.13-2026.02.0
 
 # Run tests with custom image
-make test image=public.ecr.aws/eodh/eodh-default-notebook tag=python-3.13-2026.02
+make test image=public.ecr.aws/eodh/eodh-default-notebook tag=python-3.13-2026.02.0
 ```
 
 ## SPEC-0000 Compliance
