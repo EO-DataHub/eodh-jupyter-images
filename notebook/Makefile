@@ -26,4 +26,4 @@ test:
 	$(docker) run --rm \
 		-v $(CURDIR)/tests:/home/jovyan/tests:ro \
 		$(image):$(tag) \
-		pytest /home/jovyan/tests -v
+		pytest /home/jovyan/tests -v -s
