@@ -6,7 +6,6 @@ jupyterlab==4.4.0
 jupyterlab-git==0.51.1
 
 # Data Science (not in base image)
-scikit-image==0.24.0
 networkx==3.3
 xarray==2024.10.0
 
@@ -20,7 +19,7 @@ geopandas==1.0.1
 shapely==2.0.7
 
 # EODH Platform
-pyeodh==0.1.9
+pyeodh==0.1.10
 python-dotenv==1.0.1
 s3contents==0.11.2
 hybridcontents==0.4.0
