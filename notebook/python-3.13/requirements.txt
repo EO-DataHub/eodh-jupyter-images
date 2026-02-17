@@ -7,7 +7,6 @@ jupyterlab==4.5.0
 jupyterlab-git==0.51.4
 
 # Data Science (not in base image)
-scikit-image==0.25.0
 networkx==3.5
 xarray==2024.11.0
 
