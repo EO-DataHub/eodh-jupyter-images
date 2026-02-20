@@ -16,7 +16,7 @@ jobs:
 
   publish:
     needs: prepare
-    uses: EO-DataHub/github-actions/.github/workflows/ecr-publish.yaml@main
+    uses: EO-DataHub/github-actions/.github/workflows/ecr-publish.yaml@482bee627af8442a844b85c2f58b5c90bc7ebc5a
     with:
       IMAGE_NAME: eodh-jupyter-hub
       IMAGE_TAG: ${{ needs.prepare.outputs.image_tag }}
