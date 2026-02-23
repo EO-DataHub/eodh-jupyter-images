@@ -13,6 +13,11 @@ MAKEFLAGS += --no-print-directory
 container-build:
 	$(docker) build --build-arg PYTHON_VERSION=$(python_version) -t $(image):$(tag) .
 
+.PHONY: container-build-cuda
+# CUDA image: use tag with -cuda suffix (e.g. tag=python-3.13-2026.02.0-cuda).
+container-build-cuda:
+	$(docker) build --platform linux/amd64 --build-arg PYTHON_VERSION=$(python_version) --build-arg BUILD_GPU=1 -t $(image):$(tag) .
+
 .PHONY: container-push
 container-push:
 	$(docker) push $(image):$(tag)
