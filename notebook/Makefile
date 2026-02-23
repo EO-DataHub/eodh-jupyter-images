@@ -27,3 +27,7 @@ test:
 		-v $(CURDIR)/tests:/home/jovyan/tests:ro \
 		$(image):$(tag) \
 		pytest /home/jovyan/tests -v -s
+
+.PHONY: shell
+shell:
+	$(docker) run -it --rm $(image):$(tag) /bin/bash
