@@ -37,11 +37,22 @@ make container-build image=public.ecr.aws/eodh/my-notebook tag=python-3.13-2026.
 make test tag=python-3.12-2026.02.1
 ```
 
+### GPU build (CUDA)
+
+Same base image; adds PyTorch with bundled CUDA 12.1 runtime for GPU compute. Use a distinct tag (e.g. `-cuda` suffix) so the image is separate from the CPU build.
+
+```bash
+make container-build-cuda tag=python-3.13-2026.02.0-cuda
+```
+
+Requires GPU nodes and the NVIDIA device plugin in Kubernetes; schedule pods with `nvidia.com/gpu` and use this image for the container.
+
 ### Make Targets
 
 | Target | Description |
 |--------|-------------|
 | `make container-build` | Build the image |
+| `make container-build-cuda` | Build with CUDA support (PyTorch + CUDA 12.1); use tag with `-cuda` suffix |
 | `make container-push` | Push image to ECR |
 | `make publish` | Build and push |
 | `make test` | Run pytest in container (mounts `tests/`) |
@@ -147,10 +158,12 @@ notebook/
 ├── Dockerfile                  # Multi-version build file
 ├── python-3.12/
 │   ├── environment.yml         # Mamba dependencies (geospatial)
-│   └── requirements.txt        # Pip dependencies (pinned versions)
+│   ├── requirements.txt        # Pip dependencies (pinned versions)
+│   └── requirements-gpu.txt   # GPU-only pip deps (when BUILD_GPU=1)
 ├── python-3.13/
 │   ├── environment.yml
-│   └── requirements.txt
+│   ├── requirements.txt
+│   └── requirements-gpu.txt
 ├── scripts/
 │   └── validate_spec0000.py    # SPEC-0000 compliance validation
 ├── tests/
