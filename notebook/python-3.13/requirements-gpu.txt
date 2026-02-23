@@ -1,0 +1,5 @@
+# GPU-only packages (install with BUILD_GPU=1)
+--index-url https://download.pytorch.org/whl/nightly/cu121
+--extra-index-url https://pypi.org/simple
+torch
+cupy-cuda12x

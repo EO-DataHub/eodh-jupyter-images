@@ -28,5 +28,12 @@ RUN mamba env update -n base -f /tmp/environment.yml && mamba clean --all -f -y
 COPY python-${PYTHON_VERSION}/requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
+# Optional: GPU support (see requirements-gpu.txt). Build with: docker build --build-arg BUILD_GPU=1 ...
+ARG BUILD_GPU=0
+COPY python-${PYTHON_VERSION}/requirements-gpu.txt /tmp/requirements-gpu.txt
+RUN if [ "$BUILD_GPU" = "1" ]; then \
+    pip install --no-cache-dir -r /tmp/requirements-gpu.txt; \
+    fi
+
 # Copy Jupyter configuration
 COPY jupyter_server_config.py /etc/jupyter/jupyter_server_config.py
