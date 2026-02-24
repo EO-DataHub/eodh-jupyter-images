@@ -156,14 +156,15 @@ Following [SPEC-0000](https://scientific-python.org/specs/spec-0000/), Python ve
 ```
 notebook/
 ├── Dockerfile                  # Multi-version build file
+├── cuda/
+│   ├── Dockerfile              # CUDA build file
+│   ├── requirements.txt        # Pip dependencies for CUDA
 ├── python-3.12/
 │   ├── environment.yml         # Mamba dependencies (geospatial)
 │   ├── requirements.txt        # Pip dependencies (pinned versions)
-│   └── requirements-gpu.txt
 ├── python-3.13/
 │   ├── environment.yml
 │   ├── requirements.txt
-│   └── requirements-gpu.txt
 ├── scripts/
 │   └── validate_spec0000.py    # SPEC-0000 compliance validation
 ├── tests/
