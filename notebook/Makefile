@@ -10,13 +10,14 @@ python_version := $(shell echo $(tag) | sed -n 's/python-\([0-9.]*\)-.*/\1/p')
 MAKEFLAGS += --no-print-directory
 
 .PHONY: container-build
+# Explicit --target base so we build CPU-only image (default Docker target would be last stage = cuda).
 container-build:
-	$(docker) build --build-arg PYTHON_VERSION=$(python_version) -t $(image):$(tag) .
+	$(docker) build --target base --build-arg PYTHON_VERSION=$(python_version) -t $(image):$(tag) .
 
 .PHONY: container-build-cuda
-# CUDA image: use tag with -cuda suffix (e.g. tag=python-3.13-2026.02.0-cuda).
+# CUDA image: use tag with -cuda suffix (e.g. tag=python-3.13-2026.02.0-cuda). Builds only the cuda stage.
 container-build-cuda:
-	$(docker) build --platform linux/amd64 --build-arg PYTHON_VERSION=$(python_version) --build-arg BUILD_CUDA=1 -t $(image):$(tag) .
+	$(docker) build --platform linux/amd64 --target cuda --build-arg PYTHON_VERSION=$(python_version) -t $(image):$(tag) .
 
 .PHONY: container-push
 container-push:

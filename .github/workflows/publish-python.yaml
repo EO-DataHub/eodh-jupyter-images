@@ -11,7 +11,7 @@ jobs:
     outputs:
       image_tag: ${{ steps.extract.outputs.tag }}
       python_version: ${{ steps.extract.outputs.python_version }}
-      build_cuda: ${{ steps.extract.outputs.build_cuda }}
+      build_target: ${{ steps.extract.outputs.build_target }}
     steps:
       - id: extract
         run: |
@@ -22,9 +22,10 @@ jobs:
           PY=$(echo $GITHUB_REF_NAME | sed -n 's/python-\([0-9.]*\)-.*/\1/p')
           echo "python_version=$PY" >> $GITHUB_OUTPUT
 
-          # CUDA build when tag ends with -cuda
-          if [[ "$GITHUB_REF_NAME" == *-cuda ]]; then echo "build_cuda=1" >> $GITHUB_OUTPUT; else echo "build_cuda=0" >> $GITHUB_OUTPUT; fi
+          # CUDA image: build --target cuda when tag ends with -cuda
+          if [[ "$GITHUB_REF_NAME" == *-cuda ]]; then echo "build_target=cuda" >> $GITHUB_OUTPUT; else echo "build_target=base" >> $GITHUB_OUTPUT; fi
 
+  # ecr-publish must pass BUILD_TARGET to docker build as --target when set (for -cuda tags).
   publish:
     needs: prepare
     uses: EO-DataHub/github-actions/.github/workflows/ecr-publish.yaml@main
@@ -36,7 +37,7 @@ jobs:
       BUILD_CONTEXT: notebook
       BUILD_ARGS: |
         PYTHON_VERSION=${{ needs.prepare.outputs.python_version }}
-        BUILD_CUDA=${{ needs.prepare.outputs.build_cuda }}
+      BUILD_TARGET: ${{ needs.prepare.outputs.build_target }}
     secrets: inherit
     permissions:
       id-token: write

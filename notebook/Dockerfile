@@ -1,5 +1,5 @@
 ARG PYTHON_VERSION
-FROM quay.io/jupyter/datascience-notebook:python-${PYTHON_VERSION}
+FROM quay.io/jupyter/datascience-notebook:python-${PYTHON_VERSION} AS base
 
 USER root
 
@@ -28,12 +28,23 @@ RUN mamba env update -n base -f /tmp/environment.yml && mamba clean --all -f -y
 COPY python-${PYTHON_VERSION}/requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
-# Optional: CUDA support (see requirements-cuda.txt). Build with: docker build --build-arg BUILD_GPU=1 ...
-ARG BUILD_CUDA=0
-COPY python-${PYTHON_VERSION}/requirements-cuda.txt /tmp/requirements-cuda.txt
-RUN if [ "$BUILD_CUDA" = "1" ]; then \
-    pip install --no-cache-dir -r /tmp/requirements-cuda.txt; \
-    fi
-
 # Copy Jupyter configuration
 COPY jupyter_server_config.py /etc/jupyter/jupyter_server_config.py
+
+# -----------------------------------------------------------------------------
+# CUDA stage: only built when using --target cuda (e.g. make container-build-cuda)
+# Adds full CUDA 12 runtime + torch + CuPy. Base stage has no CUDA layers.
+# -----------------------------------------------------------------------------
+FROM base AS cuda
+ARG PYTHON_VERSION
+COPY python-${PYTHON_VERSION}/requirements-cuda.txt /tmp/requirements-cuda.txt
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends wget gnupg && \
+    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
+    dpkg -i cuda-keyring_1.1-1_all.deb && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends cuda-runtime-12-4 && \
+    rm -rf /var/lib/apt/lists/* cuda-keyring_1.1-1_all.deb
+ENV CUDA_PATH=/usr/local/cuda-12.4
+USER ${NB_UID}
+RUN pip install --no-cache-dir -r /tmp/requirements-cuda.txt
