@@ -1,10 +1,8 @@
 # CUDA image: build on top of the base image (build and tag base first).
-# Default is overridden by --build-arg BASE_IMAGE=... when building via Makefile.
 ARG BASE_IMAGE=public.ecr.aws/eodh/eodh-default-notebook:python-3.13-2026.02.0
 FROM ${BASE_IMAGE}
 
 ARG PYTHON_VERSION
-# COPY python-${PYTHON_VERSION}/requirements-cuda.txt /tmp/requirements-cuda.txt
 COPY requirements.txt /tmp/requirements.txt
 
 USER root
