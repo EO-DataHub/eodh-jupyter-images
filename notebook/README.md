@@ -159,7 +159,7 @@ notebook/
 ├── python-3.12/
 │   ├── environment.yml         # Mamba dependencies (geospatial)
 │   ├── requirements.txt        # Pip dependencies (pinned versions)
-│   └── requirements-gpu.txt   # GPU-only pip deps (when BUILD_GPU=1)
+│   └── requirements-gpu.txt
 ├── python-3.13/
 │   ├── environment.yml
 │   ├── requirements.txt
