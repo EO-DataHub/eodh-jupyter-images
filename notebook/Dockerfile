@@ -1,5 +1,5 @@
 ARG PYTHON_VERSION
-FROM quay.io/jupyter/datascience-notebook:python-${PYTHON_VERSION}
+FROM quay.io/jupyter/datascience-notebook:python-${PYTHON_VERSION} AS base
 
 USER root
 

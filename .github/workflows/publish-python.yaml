@@ -11,15 +11,23 @@ jobs:
     outputs:
       image_tag: ${{ steps.extract.outputs.tag }}
       python_version: ${{ steps.extract.outputs.python_version }}
+      build_target: ${{ steps.extract.outputs.build_target }}
+      base_tag: ${{ steps.extract.outputs.base_tag }}
     steps:
       - id: extract
         run: |
-          # tag=python-3.13-2026.02.0
+          # tag=python-3.13-2026.02.0 or python-3.13-2026.02.0-cuda
           echo "tag=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
 
           # Extract Python version (e.g., 3.13 from python-3.13-2026.02.0)
           PY=$(echo $GITHUB_REF_NAME | sed -n 's/python-\([0-9.]*\)-.*/\1/p')
           echo "python_version=$PY" >> $GITHUB_OUTPUT
+
+          # CUDA image: build --target cuda when tag ends with -cuda
+          if [[ "$GITHUB_REF_NAME" == *-cuda ]]; then echo "build_target=cuda" >> $GITHUB_OUTPUT; else echo "build_target=base" >> $GITHUB_OUTPUT; fi
+
+          # Tag with -cuda stripped (for BASE_IMAGE build arg)
+          echo "base_tag=${GITHUB_REF_NAME%-cuda}" >> $GITHUB_OUTPUT
 
   publish:
     needs: prepare
@@ -29,9 +37,10 @@ jobs:
       IMAGE_TAG: ${{ needs.prepare.outputs.image_tag }}
       AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
       AWS_ECR_ALIAS: ${{ vars.AWS_ECR_ALIAS }}
-      BUILD_CONTEXT: notebook
+      BUILD_CONTEXT: ${{ needs.prepare.outputs.build_target == 'cuda' && 'notebook/cuda' || 'notebook' }}
       BUILD_ARGS: |
         PYTHON_VERSION=${{ needs.prepare.outputs.python_version }}
+        BASE_IMAGE=${{ needs.prepare.outputs.base_tag }}
     secrets: inherit
     permissions:
       id-token: write
