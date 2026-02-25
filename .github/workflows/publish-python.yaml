@@ -40,7 +40,7 @@ jobs:
       BUILD_CONTEXT: ${{ needs.prepare.outputs.build_target == 'cuda' && 'notebook/cuda' || 'notebook' }}
       BUILD_ARGS: |
         PYTHON_VERSION=${{ needs.prepare.outputs.python_version }}
-        BASE_IMAGE=${{ needs.prepare.outputs.base_tag }}
+        BASE_IMAGE=public.ecr.aws/eodh/eodh-default-notebook:${{ needs.prepare.outputs.base_tag }}
     secrets: inherit
     permissions:
       id-token: write
