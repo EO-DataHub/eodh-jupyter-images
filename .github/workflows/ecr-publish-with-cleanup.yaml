@@ -1,0 +1,100 @@
+# Local copy of EO-DataHub/github-actions ecr-publish with storage optimizer
+# to free disk space before Docker build. See:
+# https://github.com/EO-DataHub/github-actions/blob/main/.github/workflows/ecr-publish.yaml
+
+name: Publish image to AWS public ECR
+
+on:
+  workflow_call:
+    inputs:
+      IMAGE_NAME:
+        description: Name of image
+        required: true
+        type: string
+      IMAGE_TAG:
+        description: "[DEPRECATED: tags are now auto-generated] Tag name"
+        required: false
+        type: string
+        default: ''
+      AWS_ROLE_ARN:
+        description: AWS role ARN e.g. arn:aws:iam::1234567890:role/role-name
+        required: true
+        type: string
+      AWS_ECR_ALIAS:
+        description: AWS ECR alias, e.g. a1b2c3d4
+        required: true
+        type: string
+      BUILD_CONTEXT:
+        description: Docker build context path
+        required: false
+        type: string
+        default: '.'
+      BUILD_ARGS:
+        description: Optional Docker build args (multiline KEY=VALUE, one per line)
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check tag
+        if: inputs.IMAGE_TAG != ''
+        run: echo "::warning::IMAGE_TAG input is deprecated and ignored. Tags are now auto-generated."
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ inputs.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Amazon ECR
+        id: login-ecr-public
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          registry-type: public
+
+      - name: Check ECR registry
+        run: echo ${{ steps.login-ecr-public.outputs.registry }}/${{ inputs.AWS_ECR_ALIAS }}
+
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ steps.login-ecr-public.outputs.registry }}/${{ inputs.AWS_ECR_ALIAS }}/${{ inputs.IMAGE_NAME }}
+          flavor: |
+            latest=false
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}},enable=${{ startsWith(github.ref, 'refs/tags/v') }}
+            type=raw,value=${{ github.head_ref }},enable=${{ github.event_name == 'pull_request' }}
+            type=ref,event=branch,enable=${{ github.ref_name != 'main' && !startsWith(github.ref, 'refs/tags/') }}
+            type=ref,event=tag,enable=${{ startsWith(github.ref, 'refs/tags/') && !startsWith(github.ref, 'refs/tags/v') }}
+
+      - name: Storage optimize
+        uses: sparkgeo/github-actions/.github/actions/storage-optimizer@main
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ inputs.BUILD_CONTEXT }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            GIT_REF_NAME=${{ github.ref_name }}
+            GIT_SHA=${{ github.sha }}
+            ${{ inputs.BUILD_ARGS }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
