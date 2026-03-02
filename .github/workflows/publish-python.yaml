@@ -41,6 +41,7 @@ jobs:
       BUILD_ARGS: |
         PYTHON_VERSION=${{ needs.prepare.outputs.python_version }}
         BASE_IMAGE=public.ecr.aws/eodh/eodh-default-notebook:${{ needs.prepare.outputs.base_tag }}
+      cleanup: true
     secrets: inherit
     permissions:
       id-token: write
