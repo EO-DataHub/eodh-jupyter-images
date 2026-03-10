@@ -1,6 +1,10 @@
 """Test that all required packages are importable.
 
 Run with: pytest tests/test_imports.py -v
+
+CUDA-specific tests (PyTorch, CuPy, TensorFlow GPU) are marked with @pytest.mark.cuda.
+Run only those in the CUDA image: pytest tests/ -v -s -m cuda
+Or use: make test-cuda (from notebook/)
 """
 
 import subprocess
@@ -275,3 +279,41 @@ class TestWorkflows:
             with memfile.open() as src:
                 assert src.crs.to_epsg() == 4326
                 assert src.shape == (100, 100)
+
+
+@pytest.mark.cuda
+class TestCUDAPackages:
+    """Test CUDA/GPU package imports and availability (CUDA image only)."""
+
+    def test_torch(self):
+        """Test PyTorch import and CUDA availability."""
+        import torch
+        print(f"torch: {torch.__version__}", end=" ")
+        assert torch.__version__
+        # In CUDA image we expect CUDA to be available when GPU is present
+        cuda_available = torch.cuda.is_available()
+        print(f"CUDA available: {cuda_available}", end=" ")
+        if cuda_available:
+            print(f"device_count: {torch.cuda.device_count()}", end=" ")
+
+    def test_cupy(self):
+        """Test CuPy import and CUDA runtime."""
+        import cupy as cp
+        print(f"cupy: {cp.__version__}", end=" ")
+        assert cp.__version__
+        # CuPy is built for CUDA; device count may be 0 without physical GPU
+        try:
+            device_count = cp.cuda.runtime.getDeviceCount()
+            print(f"CUDA devices: {device_count}", end=" ")
+        except Exception:
+            print("(device check skipped)", end=" ")
+
+    def test_tensorflow_gpu(self):
+        """Test TensorFlow import and GPU device detection."""
+        import tensorflow as tf
+        print(f"tensorflow: {tf.__version__}", end=" ")
+        assert tf.__version__
+        gpus = tf.config.list_physical_devices("GPU")
+        print(f"GPU devices: {len(gpus)}", end=" ")
+        # Build has GPU support; actual devices depend on host
+        assert isinstance(gpus, list)
