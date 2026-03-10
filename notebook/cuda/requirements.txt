@@ -3,3 +3,4 @@
 --extra-index-url https://pypi.org/simple
 torch
 cupy-cuda13x
+tensorflow[and-cuda]
