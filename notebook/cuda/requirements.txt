@@ -2,5 +2,9 @@
 --index-url https://download.pytorch.org/whl/cu124
 --extra-index-url https://pypi.org/simple
 torch
+torchvision
 cupy-cuda12x
+# [and-cuda] installs nvidia-* CUDA wheel deps alongside tensorflow
 tensorflow[and-cuda]
+timm
+torchange
