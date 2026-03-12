@@ -1,6 +1,6 @@
 # GPU-only packages
---index-url https://download.pytorch.org/whl/cu130
+--index-url https://download.pytorch.org/whl/cu124
 --extra-index-url https://pypi.org/simple
 torch
-cupy-cuda13x
+cupy-cuda12x
 tensorflow[and-cuda]
