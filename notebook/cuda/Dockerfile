@@ -3,7 +3,6 @@ ARG BASE_IMAGE=public.ecr.aws/eodh/eodh-default-notebook:python-3.13-2026.02.0
 FROM ${BASE_IMAGE}
 
 ARG PYTHON_VERSION
-COPY requirements.txt /tmp/requirements.txt
 
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends wget gnupg && \
@@ -16,4 +15,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget gnupg && \
 ENV CUDA_PATH=/usr/local/cuda-12.4
 
 USER ${NB_UID}
+COPY requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt

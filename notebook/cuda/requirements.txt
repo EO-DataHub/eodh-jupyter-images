@@ -1,6 +1,10 @@
 # GPU-only packages
---index-url https://download.pytorch.org/whl/cu130
+--index-url https://download.pytorch.org/whl/cu124
 --extra-index-url https://pypi.org/simple
 torch
-cupy-cuda13x
+torchvision
+cupy-cuda12x
+# [and-cuda] installs nvidia-* CUDA wheel deps alongside tensorflow
 tensorflow[and-cuda]
+timm
+torchange
