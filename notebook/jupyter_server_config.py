@@ -13,6 +13,9 @@ c = get_config()  # noqa
 c.ServerApp.ip = ""
 c.ServerApp.open_browser = False
 
+# Raise up/download limit to 1 GiB (default tornado buffer is ~100 MB)
+c.ServerApp.tornado_settings = {"max_body_size": 1073741824, "max_buffer_size": 1073741824}
+
 # to output both image/svg+xml and application/pdf plot formats in the notebook file
 c.InlineBackend.figure_formats = {"png", "jpeg", "svg", "pdf"}
 
