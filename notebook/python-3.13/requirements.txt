@@ -5,6 +5,7 @@
 # JupyterLab
 jupyterlab==4.5.0
 jupyterlab-git==0.51.4
+jupyter-resource-usage==1.3.0
 
 # Data Science (not in base image)
 networkx==3.5
