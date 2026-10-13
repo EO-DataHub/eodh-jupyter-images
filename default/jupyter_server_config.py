@@ -1,3 +1,6 @@
+# Based on base-notebook/jupyter_server_config.py from jupyter/docker-stacks.
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
 import os
 
 import boto3
